@@ -1,0 +1,4 @@
+name: PhallySystemPaper
+version: '${project.version}'
+main: me.phastixtv.phallysystempaper.PhallySystemPaper
+api-version: '1.20'
