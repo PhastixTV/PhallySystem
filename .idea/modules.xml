@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PhallySystem.iml" filepath="$PROJECT_DIR$/PhallySystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PhallySystemPaper/PhallySystemPaper.iml" filepath="$PROJECT_DIR$/PhallySystemPaper/PhallySystemPaper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PhallySystemVelocity/PhallySystemVelocity.iml" filepath="$PROJECT_DIR$/PhallySystemVelocity/PhallySystemVelocity.iml" />
     </modules>
   </component>
 </project>
