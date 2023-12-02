@@ -10,9 +10,5 @@
         <module name="PhallySystemPaper" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="PhallySystemPaper" target="1.8" />
-      <module name="PhallySystemVelocity" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>
