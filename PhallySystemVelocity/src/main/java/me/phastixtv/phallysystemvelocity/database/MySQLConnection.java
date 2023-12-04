@@ -7,26 +7,16 @@ import java.sql.SQLException;
 public class MySQLConnection {
 
     private Connection connection;
-    private String host;
-    private int port;
-    private String database;
-    private String user;
-    private String password;
+    private final String[] informations = new String[5];
 
-    public MySQLConnection(String host, int port, String database, String user, String password) {
-        this.host = host;
-        this.port = port;
-        this.database = database;
-        this.user = user;
-        this.password = password;
-        connect();
-    }
 
-    public void connect() {
+    public void connect(String host, String port, String database, String user, String password) {
         if(!isConnected()) {
             try {
+                System.out.println("Eigentlich Verbunden!!!!!!!!!!!!!!!");
                 connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, user, password);
             } catch (SQLException e) {
+                System.out.println("Leider nicht Verbunden!!!!!!!!!");
                 throw new RuntimeException(e);
             }
         }
@@ -37,7 +27,7 @@ public class MySQLConnection {
     }
 
     public void disconnect() {
-        if (isConnected()) {
+        if(isConnected()) {
             try {
                 connection.close();
                 connection = null;
@@ -48,6 +38,7 @@ public class MySQLConnection {
     }
 
     public Connection getConnection() {
-        return connection;
+        return this.connection;
     }
+
 }

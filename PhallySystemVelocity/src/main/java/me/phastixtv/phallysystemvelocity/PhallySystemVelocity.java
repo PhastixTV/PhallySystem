@@ -1,13 +1,15 @@
 package me.phastixtv.phallysystemvelocity;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import me.phastixtv.phallysystemvelocity.api.CoinAPI;
 import me.phastixtv.phallysystemvelocity.database.MySQLConnection;
-import me.phastixtv.phallysystemvelocity.events.ConnectionEvent;
+import me.phastixtv.phallysystemvelocity.database.PlayerTabel;
+import me.phastixtv.phallysystemvelocity.managers.CoinManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.NotNull;
@@ -20,12 +22,10 @@ import org.slf4j.Logger;
 )
 public class PhallySystemVelocity {
 
-    MySQLConnection connection;
-    private String host = "localhost";
-    private int port = 3306;
-    private String database = "minecraft";
-    private String user = "minecraft";
-    private String password = "minecraft";
+    private final MySQLConnection connection;
+    PlayerTabel playerTabel;
+    CoinManager coinManager;
+
 
     private final Logger logger;
     private final ProxyServer server;
@@ -35,22 +35,28 @@ public class PhallySystemVelocity {
 
 
     @Inject
-    public PhallySystemVelocity(Logger logger, ProxyServer server) {
+    public PhallySystemVelocity(MySQLConnection connection, Logger logger, ProxyServer server) {
+        this.connection = connection;
         this.logger = logger;
         this.server = server;
     }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        connection = new MySQLConnection(host, port, database, user, password);
+        connection.connect("localhost", "3306", "minecraft", "minecraft", "minecraft");
+        playerTabel = new PlayerTabel(this);
+        coinManager = new CoinManager(this);
 
-        server.getEventManager().register(this, new ConnectionEvent(server, this));
-        CommandManager commandManager = server.getCommandManager();
+        server.getEventManager().register(this, coinManager);
+        server.getEventManager().register(this, playerTabel);
 
-        /* commandManager.register(commandManager.metaBuilder("kickall").build(), new KickallCommand(server, this));
-        commandManager.register(commandManager.metaBuilder("kick").build(), new KickCommand(this, server));
-        commandManager.register(commandManager.metaBuilder("ban").build(), new BanCommand(this, server));
-        commandManager.register(commandManager.metaBuilder("unban").build(), new BanCommand(this, server)); */
+        CoinAPI.setApi(coinManager);
+
+    }
+
+    @Subscribe
+    public void onProxyShutdown(ProxyShutdownEvent event) {
+        connection.disconnect();
     }
 
     public @NotNull Component getNoPerm() {

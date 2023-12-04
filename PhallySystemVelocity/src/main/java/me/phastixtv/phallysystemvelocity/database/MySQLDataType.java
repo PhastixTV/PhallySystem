@@ -2,8 +2,8 @@ package me.phastixtv.phallysystemvelocity.database;
 
 public enum MySQLDataType {
     CHAR(255),
-    BOOLEAN,
-    INT(255);
+    INT(255),
+    BOOLEAN;
 
     private final long size;
 
@@ -20,7 +20,7 @@ public enum MySQLDataType {
     }
 
     public String toSQL() {
-        if(size >0)
+        if(size > 0)
             return this.name().toUpperCase() + "(" + this.size + ")";
         return this.name().toUpperCase();
     }
