@@ -8,12 +8,15 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import me.phastixtv.phallysystemvelocity.api.CoinAPI;
 import me.phastixtv.phallysystemvelocity.database.MySQLConnection;
-import me.phastixtv.phallysystemvelocity.database.PlayerTabel;
+import me.phastixtv.phallysystemvelocity.database.MySQLDriver;
+import me.phastixtv.phallysystemvelocity.events.ConnectionEvent;
 import me.phastixtv.phallysystemvelocity.managers.CoinManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
+
+import java.nio.file.Paths;
 
 @Plugin(
         id = "phallysystemvelocity",
@@ -22,8 +25,7 @@ import org.slf4j.Logger;
 )
 public class PhallySystemVelocity {
 
-    private final MySQLConnection connection;
-    PlayerTabel playerTabel;
+    MySQLConnection connection;
     CoinManager coinManager;
 
 
@@ -35,23 +37,27 @@ public class PhallySystemVelocity {
 
 
     @Inject
-    public PhallySystemVelocity(MySQLConnection connection, Logger logger, ProxyServer server) {
-        this.connection = connection;
+    public PhallySystemVelocity(Logger logger, ProxyServer server) {
         this.logger = logger;
         this.server = server;
+
+        try {
+            new MySQLDriver(Paths.get("plugins/FriendSystem/driver"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        connection.connect("localhost", "3306", "minecraft", "minecraft", "minecraft");
-        playerTabel = new PlayerTabel(this);
+        connection = new MySQLConnection("localhost", 3306, "minecraft", "minecraft", "minecraft");
         coinManager = new CoinManager(this);
-
-        server.getEventManager().register(this, coinManager);
-        server.getEventManager().register(this, playerTabel);
 
         CoinAPI.setApi(coinManager);
 
+    server.getEventManager().register(this, coinManager);
+    server.getEventManager().register(this, new ConnectionEvent());
     }
 
     @Subscribe
@@ -69,5 +75,9 @@ public class PhallySystemVelocity {
 
     public MySQLConnection getConnection() {
         return connection;
+    }
+
+    public ProxyServer getServer() {
+        return server;
     }
 }

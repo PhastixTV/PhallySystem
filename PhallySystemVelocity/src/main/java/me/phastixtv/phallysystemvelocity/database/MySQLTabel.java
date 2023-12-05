@@ -52,8 +52,8 @@ public class MySQLTabel {
         }
     }
 
-    public void set(String columName, Object objects, Condition condition) {
-        if(objects == null) {
+    public void set(String columName, Object object, Condition condition) {
+        if(object == null) {
             remove(condition);
             return;
         }
@@ -61,7 +61,7 @@ public class MySQLTabel {
             try {
                 String sql = "update " + this.name + " set " + columName + "=? where " + condition.columName + "=?";
                 PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-                ps.setObject(1, objects);
+                ps.setObject(1, object);
                 ps.setString(2, condition.value);
                 ps.executeUpdate();
             } catch (SQLException e) {
@@ -71,7 +71,7 @@ public class MySQLTabel {
             try {
                 String sql = "insert into " + this.name + " ("  + columName + ") values (?)";
                 PreparedStatement ps = connection.getConnection().prepareStatement(sql);
-                ps.setObject(1, objects);
+                ps.setObject(1, object);
                 ps.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException(e);

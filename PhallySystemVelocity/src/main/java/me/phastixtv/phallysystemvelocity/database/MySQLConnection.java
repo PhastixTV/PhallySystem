@@ -9,12 +9,29 @@ public class MySQLConnection {
     private Connection connection;
     private final String[] informations = new String[5];
 
+    public MySQLConnection(String host, int port, String database, String user, String password) {
+        informations[0] = host;
+        informations[1] = port + "";
+        informations[2] = database;
+        informations[3] = user;
+        informations[4] = password;
+        connect();
+    }
 
-    public void connect(String host, String port, String database, String user, String password) {
+    public void connect() {
         if(!isConnected()) {
+            // load the MySQL-Connect-Driver
             try {
-                System.out.println("Eigentlich Verbunden!!!!!!!!!!!!!!!");
-                connection = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, user, password);
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                return;
+            }
+
+            // load the MySQL-connection
+            try {
+            System.out.println("[MySQL] connected!");
+                connection = DriverManager.getConnection("jdbc:mysql://" + informations[0] + ":" + informations[1] + "/" + informations[2], informations[3], informations[4]);
             } catch (SQLException e) {
                 System.out.println("Leider nicht Verbunden!!!!!!!!!");
                 throw new RuntimeException(e);
@@ -29,6 +46,7 @@ public class MySQLConnection {
     public void disconnect() {
         if(isConnected()) {
             try {
+                System.out.println("[MySQL] disconnected");
                 connection.close();
                 connection = null;
             } catch (SQLException e) {
