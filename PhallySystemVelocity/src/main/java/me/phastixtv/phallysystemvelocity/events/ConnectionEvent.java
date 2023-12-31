@@ -13,14 +13,9 @@ import java.util.*;
 
 public class ConnectionEvent {
 
-    private static MySQLTabel tabel;
-
-    PhallySystemVelocity plugin;
-
     @Subscribe
     public void onPostLogin(PostLoginEvent event) {
-        Component joinMessageTest = MiniMessage.miniMessage().deserialize(
-                plugin.getPrefix() + "<red>" + event.getPlayer().getUsername()
+        Component joinMessageTest = MiniMessage.miniMessage().deserialize("<red>" + event.getPlayer().getUsername()
                         + "</red><green> hat den Server betreten");
         event.getPlayer().sendMessage(joinMessageTest);
     }

@@ -1,12 +1,13 @@
 package me.phastixtv.phallysystemvelocity;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
-import me.phastixtv.phallysystemvelocity.api.CoinAPI;
+import me.phastixtv.phallysystemvelocity.commands.CoinCommand;
 import me.phastixtv.phallysystemvelocity.database.MySQLConnection;
 import me.phastixtv.phallysystemvelocity.database.MySQLDriver;
 import me.phastixtv.phallysystemvelocity.events.ConnectionEvent;
@@ -54,15 +55,21 @@ public class PhallySystemVelocity {
         connection = new MySQLConnection("localhost", 3306, "minecraft", "minecraft", "minecraft");
         coinManager = new CoinManager(this);
 
-        CoinAPI.setApi(coinManager);
+        //CoinAPI.setApi(coinManager);
+        CommandManager commandManager = server.getCommandManager();
+        loadCommands(commandManager);
 
-    server.getEventManager().register(this, coinManager);
-    server.getEventManager().register(this, new ConnectionEvent());
+        server.getEventManager().register(this, coinManager);
+        server.getEventManager().register(this, new ConnectionEvent());
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
         connection.disconnect();
+    }
+
+    private void loadCommands(CommandManager commandManager) {
+        commandManager.register(commandManager.metaBuilder("coin").build(), new CoinCommand(server));
     }
 
     public @NotNull Component getNoPerm() {

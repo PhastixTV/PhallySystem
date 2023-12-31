@@ -10,7 +10,6 @@ public class UUIDConverter {
     private final PhallySystemVelocity plugin;
 
     public UUIDConverter(PhallySystemVelocity plugin) {
-
         this.plugin = plugin;
     }
 
