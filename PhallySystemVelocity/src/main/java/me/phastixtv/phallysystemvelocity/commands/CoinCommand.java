@@ -5,6 +5,7 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import me.phastixtv.phallysystemvelocity.managers.CoinManager;
+import me.phastixtv.phallysystemvelocity.util.ConstantsGER;
 import me.phastixtv.phallysystemvelocity.util.IntegerVerifier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -17,8 +18,7 @@ import java.util.stream.Collectors;
 public class CoinCommand implements SimpleCommand {
 
     private final ProxyServer server;
-
-   private final Component coinPrefix = MiniMessage.miniMessage().deserialize("<light_purple><bold>Phally<green>Coins</bold> <grey>| <reset>");
+    private final ConstantsGER constantsGER = new ConstantsGER();
 
     public CoinCommand(ProxyServer server) {
         this.server = server;
@@ -45,12 +45,12 @@ public class CoinCommand implements SimpleCommand {
             if (args[0].equalsIgnoreCase("pay")) {
                 if (target != null) {
                     if (!IntegerVerifier.isInt(args[2])) {
-                        Component isNotIntMessage = MiniMessage.miniMessage().deserialize("<red>Der eingegebene Wert " + args[2] + "ist keine gültife Nummer!");
+                        Component isNotIntMessage = MiniMessage.miniMessage().deserialize(constantsGER.coinPrefix  + "<red>Der eingegebene Wert " + args[2] + "ist keine gültige Nummer!");
                         player.sendMessage(isNotIntMessage);
                         return;
                     }
                     if (CoinManager.get(player.getUniqueId())-Integer.parseInt(args[2]) < 0) {
-                        Component notEnoughtCoins = MiniMessage.miniMessage().deserialize("<red>Du hast nicht genügend Coins!");
+                        Component notEnoughtCoins = MiniMessage.miniMessage().deserialize(ConstantsGER.coinPrefix + "<red>Du hast nicht genügend Coins!");
                         player.sendMessage(notEnoughtCoins);
                         return;
                     }

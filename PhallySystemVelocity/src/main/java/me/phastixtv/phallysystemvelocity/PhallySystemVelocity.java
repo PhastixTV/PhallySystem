@@ -8,10 +8,12 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import me.phastixtv.phallysystemvelocity.commands.CoinCommand;
+import me.phastixtv.phallysystemvelocity.commands.KickCommand;
 import me.phastixtv.phallysystemvelocity.database.MySQLConnection;
 import me.phastixtv.phallysystemvelocity.database.MySQLDriver;
 import me.phastixtv.phallysystemvelocity.events.ConnectionEvent;
 import me.phastixtv.phallysystemvelocity.managers.CoinManager;
+import me.phastixtv.phallysystemvelocity.util.ConstantsGER;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.jetbrains.annotations.NotNull;
@@ -33,9 +35,6 @@ public class PhallySystemVelocity {
     private final Logger logger;
     private final ProxyServer server;
 
-    private final Component prefix = MiniMessage.miniMessage().deserialize("<light_purple><bold>Phally</bold> <grey>| <reset>");
-    private final Component noPerm = MiniMessage.miniMessage().deserialize(prefix + "<red>Dazu hast du keine Rechte!");
-
 
     @Inject
     public PhallySystemVelocity(Logger logger, ProxyServer server) {
@@ -43,7 +42,7 @@ public class PhallySystemVelocity {
         this.server = server;
 
         try {
-            new MySQLDriver(Paths.get("plugins/FriendSystem/driver"));
+            new MySQLDriver(Paths.get("plugins/PhallySystem/driver"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -70,14 +69,17 @@ public class PhallySystemVelocity {
 
     private void loadCommands(CommandManager commandManager) {
         commandManager.register(commandManager.metaBuilder("coin").build(), new CoinCommand(server));
+        commandManager.register(commandManager.metaBuilder("kick").build(), new KickCommand(server));
     }
 
-    public @NotNull Component getNoPerm() {
-        return noPerm;
-    }
-
-    public @NotNull Component getPrefix() {
-        return prefix;
+    private void startMessage() {
+        logger.info(ConstantsGER.prefix + "Loading...");
+        logger.info(" ___  _         _  _       ___             _               \n" +
+                "| . \\| |_  ___ | || | _ _ / __> _ _  ___ _| |_  ___ ._ _ _ \n" +
+                "|  _/| . |<_> || || || | |\\__ \\| | |<_-<  | |  / ._>| ' ' |\n" +
+                "|_|  |_|_|<___||_||_|`_. |<___/`_. |/__/  |_|  \\___.|_|_|_|\n" +
+                "                     <___'     <___'                       ");
+        logger.info(ConstantsGER.prefix + "The system is ready to work!");
     }
 
     public MySQLConnection getConnection() {
